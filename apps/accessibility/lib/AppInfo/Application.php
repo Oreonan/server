@@ -55,11 +55,11 @@ class Application extends App implements IBootstrap {
 	}
 
 	public function register(IRegistrationContext $context): void {
+		$context->registerInitialStateProvider(JSDataService::class);
 	}
 
 	public function boot(IBootContext $context): void {
 		$context->injectFn([$this, 'injectCss']);
-		$context->injectFn([$this, 'registerInitialState']);
 	}
 
 	public function injectCss(IUserSession $userSession,
@@ -83,14 +83,5 @@ class Application extends App implements IBootstrap {
 			$linkToCSS = $urlGenerator->linkToRoute(self::APP_ID . '.accessibility.getCss', ['md5' => $hash]);
 			\OCP\Util::addHeader('link', ['rel' => 'stylesheet', 'media' => '(prefers-color-scheme: dark)', 'href' => $linkToCSS]);
 		}
-	}
-
-	public function registerInitialState(IInitialStateService $initialState,
-										  IAppContainer $container) {
-		$initialState->provideLazyInitialState(self::APP_ID, 'data', function () use ($container) {
-			/** @var JSDataService $data */
-			$data = $container->query(JSDataService::class);
-			return $data;
-		});
 	}
 }
