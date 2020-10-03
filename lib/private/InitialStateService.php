@@ -120,15 +120,15 @@ class InitialStateService implements IInitialStateService {
 				$this->logger->logException($e, [
 					'message' => 'Could not load initial state provider dynamically: ' . $e->getMessage(),
 					'level' => ILogger::ERROR,
+					'app' => $initialState['appId'],
 				]);
 				continue;
 			}
 
 			if (!($provider instanceof InitialStateProvider)) {
 				// Log an continue. We can be fault tolerant here.
-				$this->logger->logException($e, [
-					'message' => 'Initial state provider is not an InitialStateProvider instance: ' . $e->getMessage(),
-					'level' => ILogger::ERROR,
+				$this->logger->error('Initial state provider is not an InitialStateProvider instance: ' . $initialState['class'], [
+					'app' => $initialState['appId'],
 				]);
 			}
 
